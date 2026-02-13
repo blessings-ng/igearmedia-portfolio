@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import TiltCard from "@/components/TiltCard";
 import Hero from "@/components/Hero";
+import Footer from "@/components/Footer";
 
 const portfolioVideos = [
   { id: 1, title: "Cinematic Reel", videoId: "3SxvR6M1f4U", side: "left" as const },
@@ -30,15 +31,18 @@ export default function Home() {
       </section>
 
       {/* 2-GRID MOBILE GRID */}
-      <section className="py-20 px-4 md:px-10 max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-12">
-          {portfolioVideos.map((video) => (
-            <TiltCard key={video.id} {...video} />
-          ))}
-        </div>
-      </section>
+      {/* /* Update your grid container in page.tsx */}
+<section className="py-10 px-2 md:px-10">
+  <div className="grid grid-cols-2 gap-2 md:gap-10">
+    {/* This tightens the gap for mobile so the 2-column view fits perfectly */}
+    {portfolioVideos.map((video) => (
+      <TiltCard key={video.id} {...video} />
+    ))}
+  </div>
+</section>
 
       <section>
+        <Footer/>
       </section>
     </main>
   );
