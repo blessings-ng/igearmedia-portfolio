@@ -30,11 +30,9 @@ export default function Home() {
         <Hero/>
       </section>
 
-      {/* 2-GRID MOBILE GRID */}
-      {/* /* Update your grid container in page.tsx */}
-<section className="py-10 px-2 md:px-10">
-  <div className="grid grid-cols-2 gap-2 md:gap-10">
-    {/* This tightens the gap for mobile so the 2-column view fits perfectly */}
+<section className="py-10 px-4 md:px-10 max-w-7xl mx-auto">
+  {/* grid-cols-1 for mobile, grid-cols-3 for desktop */}
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
     {portfolioVideos.map((video) => (
       <TiltCard key={video.id} {...video} />
     ))}
