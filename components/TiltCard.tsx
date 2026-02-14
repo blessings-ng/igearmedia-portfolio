@@ -13,18 +13,19 @@ export default function TiltCard({
     offset: ["start end", "end start"]
   });
 
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.8, 1, 1, 0.8]);
+  // Balanced pop-in distance for mobile and desktop
+  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.85, 1, 1, 0.85]);
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
   const xMove = useTransform(
     scrollYProgress, 
     [0, 0.2, 0.8, 1], 
-    side === "left" ? [-50, 0, 0, -50] : [50, 0, 0, 50]
+    side === "left" ? [-80, 0, 0, -80] : [80, 0, 0, 80]
   );
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-0.5, 0.5], ["12deg", "-12deg"]);
-  const rotateY = useTransform(x, [-0.5, 0.5], ["-12deg", "12deg"]);
+  const rotateX = useTransform(y, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(x, [-0.5, 0.5], ["-10deg", "10deg"]);
 
   const handleInput = (clientX: number, clientY: number) => {
     if (isPlaying || !containerRef.current) return;
@@ -34,7 +35,7 @@ export default function TiltCard({
   };
 
   return (
-    <div ref={containerRef} style={{ perspective: "1200px" }} className="w-full flex justify-center py-4 md:py-8">
+    <div ref={containerRef} style={{ perspective: "1200px" }} className="w-full flex justify-center py-6">
       <motion.div
         style={{ 
           x: xMove, scale, opacity, rotateX: isPlaying ? 0 : rotateX, rotateY: isPlaying ? 0 : rotateY, transformStyle: "preserve-3d" 
@@ -44,19 +45,19 @@ export default function TiltCard({
         onMouseLeave={() => { x.set(0); y.set(0); }}
         onTouchEnd={() => { x.set(0); y.set(0); }}
         onClick={() => !isPlaying && setPlayingId(id)}
-        className={`relative flex flex-col w-full aspect-[4/5] rounded-[30px] md:rounded-[40px] bg-black border-[1px] md:border-2 transition-all duration-300 overflow-hidden ${
+        className={`relative flex flex-col w-full max-w-[450px] aspect-[4/5] rounded-[35px] md:rounded-[45px] bg-black border-[1.5px] md:border-2 transition-all duration-300 overflow-hidden ${
           isPlaying ? 'border-brand-orange z-50 ring-2 ring-brand-orange/20' : 'border-white/10 hover:border-brand-teal'
         }`}
       >
         {/* VIDEO CONTENT */}
-        <div className={`absolute inset-0 z-10 transition-all duration-500 overflow-hidden ${isPlaying ? 'opacity-100' : 'p-3 md:p-5'}`}>
-           <div className={`relative w-full h-full overflow-hidden transition-all duration-500 ${isPlaying ? 'rounded-none' : 'rounded-[20px] md:rounded-[30px]'}`}>
+        <div className={`absolute inset-0 z-10 transition-all duration-500 overflow-hidden ${isPlaying ? 'opacity-100' : 'p-4 md:p-6'}`}>
+           <div className={`relative w-full h-full overflow-hidden transition-all duration-500 ${isPlaying ? 'rounded-none' : 'rounded-[25px] md:rounded-[35px]'}`}>
               {!isPlaying ? (
                 <>
                   <img src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} className="h-full w-full object-cover opacity-60" alt={title} />
                   <div className="absolute inset-0 flex items-center justify-center">
-                     <div className="h-10 w-10 md:h-14 md:w-14 rounded-full border border-brand-teal bg-black/40 flex items-center justify-center">
-                        <svg className="ml-1 h-5 w-5 md:h-7 md:w-7 text-brand-teal" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                     <div className="h-12 w-12 md:h-16 md:w-16 rounded-full border border-brand-teal bg-black/40 flex items-center justify-center shadow-lg">
+                        <svg className="ml-1 h-6 w-6 md:h-8 md:w-8 text-brand-teal" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                      </div>
                   </div>
                 </>
@@ -74,17 +75,17 @@ export default function TiltCard({
 
         {/* UI CONTENT */}
         <div className="mt-auto flex flex-col items-center text-center gap-1 p-6 md:p-10">
-          <h3 className="text-base md:text-2xl font-bold text-white tracking-tight">{title}</h3>
+          <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight">{title}</h3>
           <p className="text-[10px] md:text-xs text-zinc-500 font-medium uppercase tracking-widest">({subtitle})</p>
-          <button className="mt-4 md:mt-8 w-full max-w-[160px] py-2 md:py-3 rounded-full border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em] active:bg-white active:text-black transition-all">
-            View
+          <button className="mt-5 md:mt-8 w-full max-w-[180px] py-3 rounded-full border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em] active:bg-white active:text-black transition-all">
+            View Project
           </button>
         </div>
 
         {isPlaying && (
           <button 
             onClick={(e) => { e.stopPropagation(); setPlayingId(null); }}
-            className="absolute top-4 right-4 md:top-8 md:right-8 z-[100] bg-brand-orange text-black font-black px-4 py-2 rounded-full text-[10px] uppercase shadow-2xl"
+            className="absolute top-5 right-5 md:top-8 md:right-8 z-[100] bg-brand-orange text-black font-black px-5 py-2 rounded-full text-[10px] uppercase shadow-2xl active:scale-90"
           >
             Close
           </button>

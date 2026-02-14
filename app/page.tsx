@@ -23,12 +23,13 @@ export default function Home() {
       <Hero />
 
 <section className="w-full py-10 px-4 md:px-10 flex justify-center bg-black">
-  {/* max-w-[1000px] ensures the 2-column cards stay "medium" size on desktop */}
-  <div className="grid grid-cols-2 gap-6 md:gap-12 w-full max-w-[1000px]">
+  {/* Single column on mobile, 2 columns on desktop at max-w 1000px */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 w-full max-w-[1000px]">
     {portfolioVideos.map((video, index) => (
       <TiltCard 
         key={video.id} 
         {...video} 
+        // Alternates left/right slide even in a single column
         side={index % 2 === 0 ? "left" : "right"}
         activePlayingId={playingId}
         setPlayingId={setPlayingId}
