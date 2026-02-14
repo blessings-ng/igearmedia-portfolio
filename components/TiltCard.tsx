@@ -1,29 +1,30 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { motion, useMotionValue, useTransform, useScroll, useSpring } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useMotionValue, useTransform, useScroll } from "framer-motion";
 
-export default function TiltCard({ title, videoId, side }: { title: string, videoId: string, side: "left" | "right" }) {
+export default function TiltCard({ 
+  id, title, subtitle, videoId, side, activePlayingId, setPlayingId 
+}: any) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const isPlaying = activePlayingId === id;
 
-  // 1. THE SLIDE-IN (Scroll Parallax)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"]
   });
-  
-  // This handles the sliding animation as you scroll
+
+  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.8, 1, 1, 0.8]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
   const xMove = useTransform(
     scrollYProgress, 
-    [0, 1], 
-    side === "left" ? [-100, 100] : [100, -100]
+    [0, 0.2, 0.8, 1], 
+    side === "left" ? [-50, 0, 0, -50] : [50, 0, 0, 50]
   );
 
-  // 2. THE SHARP TILT (Mouse/Touch)
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-0.5, 0.5], ["15deg", "-15deg"]);
-  const rotateY = useTransform(x, [-0.5, 0.5], ["-15deg", "15deg"]);
+  const rotateX = useTransform(y, [-0.5, 0.5], ["12deg", "-12deg"]);
+  const rotateY = useTransform(x, [-0.5, 0.5], ["-12deg", "12deg"]);
 
   const handleInput = (clientX: number, clientY: number) => {
     if (isPlaying || !containerRef.current) return;
@@ -33,50 +34,60 @@ export default function TiltCard({ title, videoId, side }: { title: string, vide
   };
 
   return (
-    <div ref={containerRef} style={{ perspective: "1200px" }} className="w-full py-10 overflow-hidden">
+    <div ref={containerRef} style={{ perspective: "1200px" }} className="w-full flex justify-center py-4 md:py-8">
       <motion.div
+        style={{ 
+          x: xMove, scale, opacity, rotateX: isPlaying ? 0 : rotateX, rotateY: isPlaying ? 0 : rotateY, transformStyle: "preserve-3d" 
+        }}
         onMouseMove={(e) => handleInput(e.clientX, e.clientY)}
         onTouchMove={(e) => handleInput(e.touches[0].clientX, e.touches[0].clientY)}
         onMouseLeave={() => { x.set(0); y.set(0); }}
         onTouchEnd={() => { x.set(0); y.set(0); }}
-        onClick={() => !isPlaying && setIsPlaying(true)}
-        style={{ 
-          x: xMove, // Applies the slide animation
-          rotateX: isPlaying ? 0 : rotateX, 
-          rotateY: isPlaying ? 0 : rotateY, 
-          transformStyle: "preserve-3d" 
-        }}
-        className={`group relative aspect-video w-full cursor-pointer rounded-2xl bg-black border-2 transition-all duration-300 ${
-          isPlaying ? 'border-brand-orange scale-[1.02] z-50' : 'border-white/10'
+        onClick={() => !isPlaying && setPlayingId(id)}
+        className={`relative flex flex-col w-full aspect-[4/5] rounded-[30px] md:rounded-[40px] bg-black border-[1px] md:border-2 transition-all duration-300 overflow-hidden ${
+          isPlaying ? 'border-brand-orange z-50 ring-2 ring-brand-orange/20' : 'border-white/10 hover:border-brand-teal'
         }`}
       >
-        {/* Thumbnail Preview */}
-        {!isPlaying ? (
-          <div className="absolute inset-0 h-full w-full pointer-events-none">
-            <img 
-              src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} 
-              className="h-full w-full object-cover opacity-50"
-              alt={title}
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-               <div className="h-14 w-14 rounded-full border border-brand-teal bg-black/40 flex items-center justify-center">
-                  <svg className="ml-1 h-8 w-8 text-brand-teal" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-               </div>
-            </div>
-          </div>
-        ) : (
-          <iframe
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1`}
-            className="absolute inset-0 h-full w-full border-none"
-          />
-        )}
+        {/* VIDEO CONTENT */}
+        <div className={`absolute inset-0 z-10 transition-all duration-500 overflow-hidden ${isPlaying ? 'opacity-100' : 'p-3 md:p-5'}`}>
+           <div className={`relative w-full h-full overflow-hidden transition-all duration-500 ${isPlaying ? 'rounded-none' : 'rounded-[20px] md:rounded-[30px]'}`}>
+              {!isPlaying ? (
+                <>
+                  <img src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} className="h-full w-full object-cover opacity-60" alt={title} />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                     <div className="h-10 w-10 md:h-14 md:w-14 rounded-full border border-brand-teal bg-black/40 flex items-center justify-center">
+                        <svg className="ml-1 h-5 w-5 md:h-7 md:w-7 text-brand-teal" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                     </div>
+                  </div>
+                </>
+              ) : (
+                <div className="absolute inset-0 w-full h-full bg-black">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0`}
+                    className="absolute top-1/2 left-1/2 w-[178%] h-full -translate-x-1/2 -translate-y-1/2 pointer-events-auto"
+                    allow="autoplay; encrypted-media; fullscreen"
+                  />
+                </div>
+              )}
+           </div>
+        </div>
 
-        {/* Text */}
-        {!isPlaying && (
-          <div style={{ transform: "translateZ(50px)" }} className="absolute bottom-6 left-6 z-30 pointer-events-none">
-            <p className="text-[10px] font-black uppercase text-brand-orange tracking-widest mb-1">igearmeedia</p>
-            <h3 className="text-xl font-black italic text-white uppercase">{title}</h3>
-          </div>
+        {/* UI CONTENT */}
+        <div className="mt-auto flex flex-col items-center text-center gap-1 p-6 md:p-10">
+          <h3 className="text-base md:text-2xl font-bold text-white tracking-tight">{title}</h3>
+          <p className="text-[10px] md:text-xs text-zinc-500 font-medium uppercase tracking-widest">({subtitle})</p>
+          <button className="mt-4 md:mt-8 w-full max-w-[160px] py-2 md:py-3 rounded-full border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em] active:bg-white active:text-black transition-all">
+            View
+          </button>
+        </div>
+
+        {isPlaying && (
+          <button 
+            onClick={(e) => { e.stopPropagation(); setPlayingId(null); }}
+            className="absolute top-4 right-4 md:top-8 md:right-8 z-[100] bg-brand-orange text-black font-black px-4 py-2 rounded-full text-[10px] uppercase shadow-2xl"
+          >
+            Close
+          </button>
         )}
       </motion.div>
     </div>
