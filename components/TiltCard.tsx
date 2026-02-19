@@ -8,13 +8,13 @@ export default function TiltCard({
   const containerRef = useRef<HTMLDivElement>(null);
   const isPlaying = activePlayingId === id;
 
+  // 1. POP-IN / POP-OUT ANIMATION
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"]
   });
 
-  // Balanced pop-in distance for mobile and desktop
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.85, 1, 1, 0.85]);
+  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.9, 1, 1, 0.9]);
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
   const xMove = useTransform(
     scrollYProgress, 
@@ -22,10 +22,11 @@ export default function TiltCard({
     side === "left" ? [-80, 0, 0, -80] : [80, 0, 0, 80]
   );
 
+  // 2. SHARP TILT (Direct Mapping)
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-0.5, 0.5], ["10deg", "-10deg"]);
-  const rotateY = useTransform(x, [-0.5, 0.5], ["-10deg", "10deg"]);
+  const rotateX = useTransform(y, [-0.5, 0.5], ["8deg", "-8deg"]);
+  const rotateY = useTransform(x, [-0.5, 0.5], ["-8deg", "8deg"]);
 
   const handleInput = (clientX: number, clientY: number) => {
     if (isPlaying || !containerRef.current) return;
@@ -35,7 +36,8 @@ export default function TiltCard({
   };
 
   return (
-    <div ref={containerRef} style={{ perspective: "1200px" }} className="w-full flex justify-center py-6">
+    <div ref={containerRef} style={{ perspective: "1500px" }} className="w-full flex flex-col items-center">
+      {/* THE MOTHER CARD - SHARP 16:9 BOX */}
       <motion.div
         style={{ 
           x: xMove, scale, opacity, rotateX: isPlaying ? 0 : rotateX, rotateY: isPlaying ? 0 : rotateY, transformStyle: "preserve-3d" 
@@ -45,51 +47,55 @@ export default function TiltCard({
         onMouseLeave={() => { x.set(0); y.set(0); }}
         onTouchEnd={() => { x.set(0); y.set(0); }}
         onClick={() => !isPlaying && setPlayingId(id)}
-        className={`relative flex flex-col w-full max-w-[450px] aspect-[4/5] rounded-[35px] md:rounded-[45px] bg-black border-[1.5px] md:border-2 transition-all duration-300 overflow-hidden ${
-          isPlaying ? 'border-brand-orange z-50 ring-2 ring-brand-orange/20' : 'border-white/10 hover:border-brand-teal'
+        // SHARP EDGES (no rounding) to match your documentary style
+        className={`relative w-full aspect-video bg-zinc-100 overflow-hidden cursor-pointer border-2 transition-colors duration-300 ${
+          isPlaying ? 'border-red-600 shadow-2xl' : 'border-transparent hover:border-zinc-200'
         }`}
       >
-        {/* VIDEO CONTENT */}
-        <div className={`absolute inset-0 z-10 transition-all duration-500 overflow-hidden ${isPlaying ? 'opacity-100' : 'p-4 md:p-6'}`}>
-           <div className={`relative w-full h-full overflow-hidden transition-all duration-500 ${isPlaying ? 'rounded-none' : 'rounded-[25px] md:rounded-[35px]'}`}>
-              {!isPlaying ? (
-                <>
-                  <img src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} className="h-full w-full object-cover opacity-60" alt={title} />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                     <div className="h-12 w-12 md:h-16 md:w-16 rounded-full border border-brand-teal bg-black/40 flex items-center justify-center shadow-lg">
-                        <svg className="ml-1 h-6 w-6 md:h-8 md:w-8 text-brand-teal" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                     </div>
-                  </div>
-                </>
-              ) : (
-                <div className="absolute inset-0 w-full h-full bg-black">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0`}
-                    className="absolute top-1/2 left-1/2 w-[178%] h-full -translate-x-1/2 -translate-y-1/2 pointer-events-auto"
-                    allow="autoplay; encrypted-media; fullscreen"
-                  />
-                </div>
-              )}
-           </div>
-        </div>
-
-        {/* UI CONTENT */}
-        <div className="mt-auto flex flex-col items-center text-center gap-1 p-6 md:p-10">
-          <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight">{title}</h3>
-          <p className="text-[10px] md:text-xs text-zinc-500 font-medium uppercase tracking-widest">({subtitle})</p>
-          <button className="mt-5 md:mt-8 w-full max-w-[180px] py-3 rounded-full border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em] active:bg-white active:text-black transition-all">
-            View Project
-          </button>
+        <div className="absolute inset-0">
+          {!isPlaying ? (
+            <div className="relative w-full h-full group">
+              <img 
+                src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} 
+                className="h-full w-full object-cover" 
+                alt={title} 
+              />
+              {/* YouTube Style Play Button */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                 <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-red-600 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <svg className="ml-1 h-8 w-8 md:h-10 md:w-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                 </div>
+              </div>
+            </div>
+          ) : (
+            <iframe
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&modestbranding=1`}
+              className="w-full h-full border-none"
+              allow="autoplay; encrypted-media; fullscreen"
+            />
+          )}
         </div>
 
         {isPlaying && (
           <button 
             onClick={(e) => { e.stopPropagation(); setPlayingId(null); }}
-            className="absolute top-5 right-5 md:top-8 md:right-8 z-[100] bg-brand-orange text-black font-black px-5 py-2 rounded-full text-[10px] uppercase shadow-2xl active:scale-90"
+            className="absolute top-4 right-4 z-[100] bg-black text-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider"
           >
             Close
           </button>
         )}
+      </motion.div>
+
+      {/* THE DESCRIPTION SECTION (Matching your Mobile/Desktop Reference) */}
+      <motion.div 
+        style={{ x: xMove, opacity }} 
+        className="mt-6 md:mt-8 flex flex-col items-center text-center max-w-[80%] md:max-w-full"
+      >
+        <p className="text-base md:text-2xl font-medium text-zinc-900 leading-snug">
+          {subtitle} <span className="font-bold">({title})</span>
+        </p>
       </motion.div>
     </div>
   );

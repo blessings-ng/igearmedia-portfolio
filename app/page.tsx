@@ -6,12 +6,15 @@ import Footer from "@/components/Footer";
 
 // Added subtitles to match the new Project Card UI
 const portfolioVideos = [
-  { id: "1", title: "Cinematic Reel", subtitle: "Directing / Edit", videoId: "3SxvR6M1f4U" },
-  { id: "2", title: "Tech Glow", subtitle: "Visual Effects", videoId: "dQw4w9WgXcQ" },
-  { id: "3", title: "Night Vibes", subtitle: "Color Grading", videoId: "5v87YI-Nq5o" },
-  { id: "4", title: "Media Flow", subtitle: "Brand Story", videoId: "9Wd-m00vQ90" },
-  { id: "5", title: "Production", subtitle: "Motion Graphics", videoId: "L_LUpnqyT9Y" },
-  { id: "6", title: "Final Cut", subtitle: "Post Production", videoId: "2Vv-BfVoq4g" },
+  { id: "1", title: "Cinematic Reel", subtitle: "Directing / Edit", videoId: "bCwL8aaZtnY" },
+  { id: "2", title: "Tech Glow", subtitle: "Visual Effects", videoId: "SOvPUsw2kGo" },
+  { id: "3", title: "Night Vibes", subtitle: "Color Grading", videoId: "q0fS1HQPuaM" },
+  { id: "4", title: "Media Flow", subtitle: "Brand Story", videoId: "tTBnn4TGFSk" },
+  { id: "5", title: "Production", subtitle: "Motion Graphics", videoId: "WexXhORkCKk" },
+  { id: "6", title: "Final Cut", subtitle: "Post Production", videoId: "-9uqcSNDEc0" },
+  { id: "7", title: "Final Cut", subtitle: "Post Production", videoId: "0AtbaKrLTDo" },
+  { id: "8", title: "Final Cut", subtitle: "Post Production", videoId: "9kKlZQGEOto" },
+
 ];
 
 export default function Home() {
@@ -22,14 +25,13 @@ export default function Home() {
     <main className="bg-black min-h-screen overflow-x-hidden text-white">
       <Hero />
 
-<section className="w-full py-10 px-4 md:px-10 flex justify-center bg-black">
-  {/* Single column on mobile, 2 columns on desktop at max-w 1000px */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 w-full max-w-[1000px]">
+<section className="w-full py-10 md:py-20 px-4 flex justify-center bg-white text-black">
+  {/* Single column stack. max-w-[900px] keeps the 'big screen' size sharp and focused */}
+  <div className="flex flex-col gap-16 md:gap-24 w-full max-w-[900px]">
     {portfolioVideos.map((video, index) => (
       <TiltCard 
         key={video.id} 
         {...video} 
-        // Alternates left/right slide even in a single column
         side={index % 2 === 0 ? "left" : "right"}
         activePlayingId={playingId}
         setPlayingId={setPlayingId}
@@ -37,7 +39,6 @@ export default function Home() {
     ))}
   </div>
 </section>
-
       <Footer />
     </main>
   );
