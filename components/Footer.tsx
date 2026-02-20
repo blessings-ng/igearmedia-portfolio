@@ -52,7 +52,7 @@ export default function Footer() {
         {/* COPYRIGHT & LEGAL */}
         <div className="w-full flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-8 gap-4">
           <p className="text-[10px] text-zinc-600 uppercase font-bold tracking-widest">
-            © 2026 IGearMeedia by Blessings. All Rights Reserved.
+            © 2026 iGearMedia by Blessings. All Rights Reserved.
           </p>
           <div className="flex gap-6">
             <span className="text-[10px] text-zinc-700 font-bold uppercase cursor-pointer hover:text-white transition-colors">Privacy Policy</span>
@@ -61,7 +61,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Subtle Background Glow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-brand-teal opacity-20 shadow-[0_0_100px_40px_rgba(58,141,168,0.1)]" />
     </footer>
   );
