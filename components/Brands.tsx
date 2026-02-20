@@ -8,7 +8,7 @@ const brands = [
   { name: "Brandoxel", count: "2k+ Subscribers", color: "bg-orange-600" }
 ];
 
-export default function Brands({ isDarkMode }) {
+export default function Brands({ isDarkMode }: { isDarkMode: boolean }) {
   return (
     <section className={`w-full py-12 px-4 flex flex-col items-center border-t transition-colors duration-500 ${isDarkMode ? "border-white/10 bg-black" : "border-zinc-100 bg-white"}`}>
       <p className={`text-[10px] uppercase tracking-[0.3em] mb-10 font-bold ${isDarkMode ? "text-zinc-500" : "text-zinc-400"}`}>
