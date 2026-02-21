@@ -8,9 +8,17 @@ import Reviews from "@/components/Reviews";
 import Footer from "@/components/Footer";
 import { Sun, Moon } from "lucide-react";
 
-const portfolioVideos = [
+// Explicitly defining the structure for our video data
+interface Video {
+  id: string;
+  title: string;
+  subtitle: string;
+  videoId: string;
+}
+
+const portfolioVideos: Video[] = [
   { id: "1", title: "What Actually Matters", subtitle: "From Book Idea to Media Coverage:", videoId: "bCwL8aaZtnY" },
-  { id: "2", title: "Which To Focus on First?", subtitle: "Personal Branding vs Business Branding for Thought Leaders:", videoId: "SOvPUvsw2kGo" },
+  { id: "2", title: "Which To Focus on First?", subtitle: "Personal Branding vs Business Branding for Thought Leaders:", videoId: "SOvPUsw2kGo" },
   { id: "3", title: "The Moment I Stopped", subtitle: "Tying My Self Worth to the Numbers:", videoId: "q0fS1HQPuaM" },
   { id: "4", title: "The Right Way", subtitle: "How To Upload Videos On YouTube:", videoId: "tTBnn4TGFSk" },
   { id: "5", title: "Project Preview", subtitle: "WexXhORkCKk", videoId: "WexXhORkCKk" },
@@ -20,8 +28,9 @@ const portfolioVideos = [
 ];
 
 export default function Home() {
-  const [playingId, setPlayingId] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  // Added TypeScript generics to useState
+  const [playingId, setPlayingId] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
 
   return (
     <main className={`min-h-screen overflow-x-hidden transition-colors duration-500 ${isDarkMode ? "bg-black text-white" : "bg-white text-black"}`}>
@@ -47,7 +56,6 @@ export default function Home() {
       {/* WORKS SECTION */}
       <section className={`w-full py-16 md:py-32 px-4 flex flex-col items-center transition-colors duration-500 ${isDarkMode ? "bg-black" : "bg-white"}`}>
         
-        {/* THE HEADER YOU WERE LOOKING FOR */}
         <h1 className="text-3xl md:text-6xl font-black uppercase tracking-tighter mb-16 md:mb-24 text-center">
           Check out our works
         </h1>

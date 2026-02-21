@@ -1,7 +1,5 @@
 "use client";
 import React from "react";
-
-// THIS INTERFACE PREVENTS THE BUILD ERROR
 interface BrandsProps {
   isDarkMode: boolean;
 }
